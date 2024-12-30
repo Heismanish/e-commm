@@ -4,6 +4,8 @@ import { generateToken, setRefreshToken } from "../lib/generateToken";
 import redis from "../lib/redis";
 import jwt from "jsonwebtoken";
 import token from "../types/token.type";
+import { IUser } from "../types/user.type";
+import mongoose, { ObjectId } from "mongoose";
 
 function setCookies(res: Response, accessToken: string, refreshToken: string) {
   res.cookie("accessToken", accessToken, {
@@ -28,7 +30,7 @@ const singup = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser: IUser | null = await User.findOne({ email });
     if (existingUser) {
       res.status(400).json({ message: "User already exists" });
       return;
@@ -39,11 +41,16 @@ const singup = async (req: Request, res: Response): Promise<void> => {
       email,
       password,
     });
-    const savedUser = await newUser.save();
+    const savedUser: IUser = await newUser.save();
 
-    const { accessToken, refreshToken } = generateToken(savedUser._id); // {refreshToken, accessToken}
+    const { accessToken, refreshToken } = generateToken(
+      savedUser._id as mongoose.Types.ObjectId
+    ); // {refreshToken, accessToken}
 
-    await setRefreshToken(refreshToken, savedUser._id);
+    await setRefreshToken(
+      refreshToken,
+      savedUser._id as mongoose.Types.ObjectId
+    );
     setCookies(res, accessToken, refreshToken);
 
     res.status(201).json({ message: "User created successfully", savedUser });
@@ -72,7 +79,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser: IUser | null = await User.findOne({ email });
     if (!existingUser) {
       res.status(400).json({ message: "User not found" });
       return;
@@ -84,9 +91,14 @@ const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const { accessToken, refreshToken } = generateToken(existingUser._id); // {refreshToken, accessToken}
+    const { accessToken, refreshToken } = generateToken(
+      existingUser._id as mongoose.Types.ObjectId
+    ); // {refreshToken, accessToken}
 
-    await setRefreshToken(refreshToken, existingUser._id);
+    await setRefreshToken(
+      refreshToken,
+      existingUser._id as mongoose.Types.ObjectId
+    );
     setCookies(res, accessToken, refreshToken);
 
     res.status(201).json({ message: "Login successful", existingUser });

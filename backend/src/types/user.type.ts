@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 // type of the user:
-export interface IUser extends Document {
+export interface IUser extends mongoose.Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
