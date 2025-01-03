@@ -4,6 +4,7 @@ import { connectDB } from "./lib/db";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
 import productRoute from "./routes/product.route";
+import cartRoute from "./routes/cart.route";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoute);
+app.use("/api/cart", cartRoute);
 
 app.listen(PORT, () => {
   console.log(`listening on port http://localhost:${PORT}`);

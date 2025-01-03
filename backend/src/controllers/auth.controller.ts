@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import User from "../model/User.model";
 import { generateToken, setRefreshToken } from "../lib/generateToken";
 import redis from "../lib/redis";
@@ -130,7 +130,6 @@ const logout = async (req: Request, res: Response): Promise<void> => {
     ) as token;
 
     await redis.del(`refreshToken:${decoded.user_id}`);
-    console.log(decoded.user_id);
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
