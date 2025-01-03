@@ -27,6 +27,7 @@ const getFeaturedProduct = async (
       return;
     } else {
       const featuredProducts = await Product.find({ isFeatured: true }).lean(); // lean() returns a js object rather than a mongoose object, but we can't modify or save it.
+
       redis.set("featured_products", JSON.stringify(featuredProducts));
       res.status(201).json(featuredProducts);
       return;
@@ -83,6 +84,9 @@ const deleteProduct = async (req: Request, res: Response) => {
       const publicId = product?.image?.split("/")?.pop()?.split(".")[0];
       await cloudinary.uploader.destroy(publicId!);
     }
+
+    await Product.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: "Product deleted successfully" });
     return;
   } catch (error) {
@@ -128,6 +132,7 @@ const getCategoryProducts = async (req: Request, res: Response) => {
       .json({ message: `Error in getting category products \n ${error}` });
   }
 };
+
 const toggleFeaturedProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
