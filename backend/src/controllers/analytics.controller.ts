@@ -63,7 +63,6 @@ export const getDailySalesData = async (
   end: Date
 ): Promise<Date[]> => {
   try {
-    console.log("Start Date:", start, "End Date:", end);
     const dailySalesData = await Order.aggregate([
       {
         $match: { createdAt: { $gte: start, $lte: end } },

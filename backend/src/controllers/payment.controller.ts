@@ -60,7 +60,7 @@ const createCheckoutSession = async (
         );
       }
     }
-    console.log(products);
+
     const stripeCoupon =
       coupon && (await createStripeCoupon(coupon.discountPercentage));
 
@@ -136,12 +136,9 @@ async function generateNewCoupon(_id: Types.ObjectId) {
  */
 const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("reached");
     const { sessionId } = req.body;
-    console.log(sessionId);
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    console.log(session);
 
     if (session && session.payment_status === "unpaid") {
       const coupon = JSON.parse(session?.metadata?.coupon as string);
@@ -152,7 +149,6 @@ const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
 
       // create a new order:
       const product = JSON.parse(session?.metadata?.products as string);
-      console.log(product);
 
       const newOrder = await Order.create({
         user: session?.metadata?.userId,
@@ -164,7 +160,7 @@ const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
         totalAmount: (session?.amount_total as number) / 100,
         stripeSessionId: sessionId,
       });
-      console.log(newOrder);
+
       res.status(200).json({
         message:
           "Payment successful, order created, and coupon deactivated if used.",

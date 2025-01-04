@@ -14,19 +14,14 @@ import Product from "../model/Product.model";
  */
 const getCartProducts = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log(req.user?.cartItems);
     const products = await Product.find({
       _id: { $in: req.user?.cartItems.map((item) => item.products) },
     });
-
-    console.log(products);
 
     const cartItems = products.map((product) => {
       const item = req.user?.cartItems.find((i) => i.products == product.id);
       return { ...product.toJSON(), quantity: item?.quantity };
     });
-
-    console.log(cartItems);
 
     res.status(200).json(cartItems);
     return;

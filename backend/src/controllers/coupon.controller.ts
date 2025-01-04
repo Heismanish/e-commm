@@ -34,7 +34,7 @@ const getCoupon = async (req: Request, res: Response): Promise<void> => {
 const validateCoupon = async (req: Request, res: Response): Promise<void> => {
   try {
     const { code } = req.body;
-    console.log(code);
+
     const coupon = await Coupon.findOne({
       code: code,
       isActive: true,
