@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route";
 import productRoute from "./routes/product.route";
 import cartRoute from "./routes/cart.route";
+import couponRoute from "./routes/coupon.route";
+import paymentRoute from "./routes/payment.route";
+import analyticsRoute from "./routes/analytics.route";
 
 dotenv.config();
 
@@ -17,6 +20,9 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
+app.use("/api/coupons", couponRoute);
+app.use("/api/payments", paymentRoute);
+app.use("/api/analytics", analyticsRoute);
 
 app.listen(PORT, () => {
   console.log(`listening on port http://localhost:${PORT}`);
