@@ -53,7 +53,16 @@ const singup = async (req: Request, res: Response): Promise<void> => {
     );
     setCookies(res, accessToken, refreshToken);
 
-    res.status(201).json({ message: "User created successfully", savedUser });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        name: savedUser.name,
+        email: savedUser.email,
+        role: savedUser.role,
+        cartItems: savedUser?.cartItems,
+        createdAt: savedUser?.createdAt,
+      },
+    });
     return;
   } catch (error) {
     console.log("Error in signup", error);
@@ -101,7 +110,16 @@ const login = async (req: Request, res: Response): Promise<void> => {
     );
     setCookies(res, accessToken, refreshToken);
 
-    res.status(201).json({ message: "Login successful", existingUser });
+    res.status(201).json({
+      message: "Login successful",
+      user: {
+        name: existingUser.name,
+        email: existingUser.email,
+        role: existingUser.role,
+        cartItems: existingUser?.cartItems,
+        createdAt: existingUser?.createdAt,
+      },
+    });
     return;
   } catch (error) {
     console.log("Error in login", error);
@@ -141,7 +159,7 @@ const logout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// 1. destructure refrshtoken from body
+// 1. destructure refreshtoken from body
 // 2. decode  user_id from the token and fetch token stored on redis for that user
 // 3. verify the token
 // 4. if valid then, generate a new access token ans set it to the cookie
@@ -207,11 +225,13 @@ const profile = async (req: Request, res: Response): Promise<void> => {
     const user = await User.findById(decode.user_id);
     res.status(200).json({
       message: "Profile fetched successfully",
-      name: user?.name,
-      email: user?.email,
-      role: user?.role,
-      cartItems: user?.cartItems,
-      createdAt: user?.createdAt,
+      user: {
+        name: user?.name,
+        email: user?.email,
+        role: user?.role,
+        cartItems: user?.cartItems,
+        createdAt: user?.createdAt,
+      },
     });
     return;
   } catch (error) {

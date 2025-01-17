@@ -1,10 +1,15 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, Lock, UserPlus, LogOut, LogInIcon } from "lucide-react";
+import useUserState from "../store/useUserStore";
 
 const Navbar = () => {
-  const user = false;
-  const cart = { length: 2 };
-  const isAdmin = false;
+  const { user, logout } = useUserState();
+  const cart = user?.cartItems || [];
+  const isAdmin = user?.role;
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-gray-900 backdrop-blur-lg bg-opacity-80 shadow-lg duration-300 transition-all border-b border-emerald-800 ">
@@ -17,10 +22,10 @@ const Navbar = () => {
             E-commerce
           </Link>
 
-          <nav className="flex flex-row flex-wrap items-center gap-4">
+          <nav className="flex flex-row flex-wrap items-center gap-2">
             <Link
               to="/"
-              className="text-white font-medium hover:text-emerald-400 duration-300 transition px-3 py-2"
+              className="text-white font-normal hover:text-emerald-400 duration-300 transition px-3 py-2"
             >
               Home
             </Link>
@@ -53,7 +58,7 @@ const Navbar = () => {
             )}
             {user ? (
               <button
-                onClick={() => {}}
+                onClick={handleLogout}
                 className="px-3 py-2 text-white bg-gray-700 hover:bg-gray-600 rounded-md flex items-center justify-center transition duration-300 ease-in-out"
               >
                 <LogOut className="inline-block " size={20} />

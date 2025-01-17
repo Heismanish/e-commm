@@ -8,11 +8,19 @@ import cartRoute from "./routes/cart.route";
 import couponRoute from "./routes/coupon.route";
 import paymentRoute from "./routes/payment.route";
 import analyticsRoute from "./routes/analytics.route";
+import cors from "cors";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+
+const corsOptions = {
+  origin: process.env.CLIENT_URL || "http://localhost:5173", // Replace with your client URL
+  credentials: true, // Allow cookies to be sent
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
