@@ -7,6 +7,7 @@ export default interface IProduct extends mongoose.Document {
   price: number;
   image: string;
   category: string;
+  countInStock: number;
   isFeatured: boolean;
   createdAt: Date;
 }

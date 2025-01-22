@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 import useUserStore from "./store/useUserStore";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
+import Dashboard from "./pages/Dashboard";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -37,6 +39,16 @@ function App() {
           <Route
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/secret-dashboard"
+            element={
+              user?.role === "admin" ? <Dashboard /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/category/:category"
+            element={user ? <CategoryPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

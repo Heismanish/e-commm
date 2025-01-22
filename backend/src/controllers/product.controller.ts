@@ -50,7 +50,7 @@ const createProduct = async (req: Request, res: Response) => {
       });
     }
 
-    const newPoroduct = await Product.create({
+    const newProduct = await Product.create({
       name,
       description,
       price,
@@ -58,12 +58,13 @@ const createProduct = async (req: Request, res: Response) => {
         ? cloudinaryResponse?.secure_url
         : "",
       category,
+
       isFeatured,
     });
 
     res
       .status(200)
-      .json({ message: "Product created successfully", product: newPoroduct });
+      .json({ message: "Product created successfully", product: newProduct });
   } catch (error) {
     console.log("Error in creating product", error);
     res.status(500).json({ message: `Error in creating product \n ${error}` });

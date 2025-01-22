@@ -27,6 +27,7 @@ const productSchema = new mongoose.Schema<IProduct>({
     type: Boolean,
     default: false,
   },
+
   createdAt: {
     type: Date,
     default: Date.now,
