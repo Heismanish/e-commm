@@ -4,6 +4,7 @@ type PropsType = {
   key: Number;
   data: { href: string; name: string; imageUrl: string };
 };
+
 const CategoryItem = (props: PropsType) => {
   const category = props.data;
   return (

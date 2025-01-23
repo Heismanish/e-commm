@@ -88,7 +88,8 @@ const removeAllFromCart = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { productId } = req.body;
+    const { id: productId } = req.params;
+
     const user = req.user;
 
     if (!productId) {

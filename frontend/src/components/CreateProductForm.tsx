@@ -32,7 +32,6 @@ const CreateProductForm = () => {
         description: "",
         price: 0,
         category: "",
-
         image: "",
         isFeatured: false,
       });

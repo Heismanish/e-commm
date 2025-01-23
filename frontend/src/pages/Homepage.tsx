@@ -4,6 +4,7 @@ const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/Jeans.jpg" },
   { href: "/glasses", name: "Glasses", imageUrl: "/Glasses.png" },
   { href: "/suits", name: "Suits", imageUrl: "/Suits.jpg" },
+  { href: "/t-shirts", name: "T-Shirts", imageUrl: "/Tshirts.jpg" },
   { href: "/shoes", name: "Shoes", imageUrl: "/Shoes.jpg" },
   { href: "/jacket", name: "Jackets", imageUrl: "/Jackets.jpg" },
   { href: "/bags", name: "Bags", imageUrl: "/Bags.jpg" },

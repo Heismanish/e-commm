@@ -2,16 +2,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import axios from "../lib/axios";
 import { AxiosError } from "axios";
-
-export type Product = {
-  _id?: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  isFeatured: boolean;
-};
+import Product from "../Types/product.type";
 
 type ProductStateType = {
   products: Product[];
@@ -21,6 +12,7 @@ type ProductStateType = {
   fetchAllProducts: () => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   toggleFeaturedProduct: (productId: string) => Promise<void>;
+  fetchProductByCategory: (category: string) => Promise<void>;
 };
 
 const useProductState = create<ProductStateType>()((set) => ({
@@ -85,6 +77,21 @@ const useProductState = create<ProductStateType>()((set) => ({
       toast.error("Failed to update product", error.response.data.error);
       console.log(error);
       set({ loading: false });
+    }
+  },
+  fetchProductByCategory: async (category: string) => {
+    set({ loading: true });
+    try {
+      const res = await axios.get(`/product/category/${category}`);
+      console.log(res.data);
+      set({
+        products: res.data.categoryProduct,
+        loading: false,
+      });
+    } catch (error: AxiosError | any) {
+      set({ loading: false });
+      console.log(error);
+      toast.error("Failed to fetch products ", error?.response?.data.error);
     }
   },
 }));

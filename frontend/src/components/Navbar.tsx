@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, Lock, UserPlus, LogOut, LogInIcon } from "lucide-react";
 import useUserState from "../store/useUserStore";
+import useCartStore from "../store/useCartStore";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const { user, logout } = useUserState();
-  const cart = user?.cartItems || [];
+  const { cart, getCartItems } = useCartStore();
+
   const isAdmin = user?.role;
+
+  useEffect(() => {
+    getCartItems();
+  }, [getCartItems]);
 
   const handleLogout = () => {
     logout();
@@ -23,13 +30,6 @@ const Navbar = () => {
           </Link>
 
           <nav className="flex flex-row flex-wrap items-center gap-2">
-            <Link
-              to="/"
-              className="text-white font-normal hover:text-emerald-400 duration-300 transition px-3 py-2"
-            >
-              Home
-            </Link>
-
             {user && (
               <Link
                 to="/cart"

@@ -53,7 +53,7 @@ const useUserState = create<UserStore>()((set) => ({
 
     if (password !== confirmPassword) {
       set({ loading: false });
-      toast.error("Password doesn't match");
+      toast.error("Password doesn't match", { id: "password-mismatch" });
       return;
     }
 
@@ -71,10 +71,11 @@ const useUserState = create<UserStore>()((set) => ({
       if (isAxiosError(error)) {
         toast.error(
           error.response?.data?.message ||
-            "An error has occurred while signing up!!"
+            "An error has occurred while signing up!!",
+          { id: "signup" }
         );
       } else {
-        toast.error("An unknown error occurred");
+        toast.error("An unknown error occurred", { id: "signup" });
       }
       return;
     }
@@ -89,10 +90,12 @@ const useUserState = create<UserStore>()((set) => ({
       set({ loading: false });
       if (isAxiosError(error)) {
         toast.error(
-          error?.response?.data?.message || "An error occure while logging in!!"
+          error?.response?.data?.message ||
+            "An error occure while logging in!!",
+          { id: "login" }
         );
       } else {
-        toast.error("An unknown error occurred");
+        toast.error("An unknown error occurred", { id: "login" });
       }
     }
   },
