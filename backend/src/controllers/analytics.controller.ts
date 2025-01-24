@@ -58,10 +58,12 @@ export const getDataAnalytics = async (): Promise<AnalyticsData> => {
  * @param {Date} end - The end date of the range.
  * @returns {Promise<(Date & { sales: number; revenue: number })[]>} An array of objects with daily sales data.
  */
+
+type salesDataType = { date: Date; sales: number; revenue: number }[];
 export const getDailySalesData = async (
   start: Date,
   end: Date
-): Promise<Date[]> => {
+): Promise<salesDataType> => {
   try {
     const dailySalesData = await Order.aggregate([
       {
@@ -85,19 +87,20 @@ export const getDailySalesData = async (
 
     const dateArray: Date[] = getDatesRange(start, end);
 
-    dateArray.map((date) => {
+    const salesData: salesDataType = dateArray.map((date) => {
       const formattedDate = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
       const foundData = dailySalesData.find(
         (data) => data._id === formattedDate
       );
+      console.log(foundData);
       return {
         date,
-        sale: foundData ? foundData.sales : 0,
+        sales: foundData ? foundData.sales : 0,
         revenue: foundData ? foundData.revenue : 0,
       };
     });
-
-    return dateArray;
+    console.log(salesData);
+    return salesData;
   } catch (error: any) {
     console.log("Error in getDailySalesData", error);
     throw error;
