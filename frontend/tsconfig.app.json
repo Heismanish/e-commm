@@ -8,10 +8,10 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "moduleDetection": "force",
+    // "moduleDetection": "",
     "noEmit": true,
     "jsx": "react-jsx",
 
@@ -23,6 +23,8 @@
     "noUncheckedSideEffectImports": true,
 
     "noImplicitAny": false,   
+    "skipDefaultLibCheck": true,   
+    "strictPropertyInitialization": false
   },
   "include": ["src"]
 }
