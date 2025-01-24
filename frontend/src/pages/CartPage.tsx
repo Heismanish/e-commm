@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import useCartStore from "../store/useCartStore";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";

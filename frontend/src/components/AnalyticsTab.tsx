@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import React, { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "../lib/axios";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";

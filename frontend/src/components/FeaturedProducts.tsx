@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useProductState from "../store/useProductStore";
 import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import useCartStore from "../store/useCartStore";

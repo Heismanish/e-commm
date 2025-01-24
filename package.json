@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon backend/dist/server.js\"",
-    "start" : "tsc && node backend/dist/server.js ",
-    "build": "npm install &&  cd frontend && npm run build "
+    "start" : "tsc && node backend/dist/server.js "
+
   },
   "keywords": [],
   "author": "",
