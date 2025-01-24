@@ -107,6 +107,8 @@ const getRecommendedProduct = async (req: Request, res: Response) => {
           description: 1,
           price: 1,
           image: 1,
+          category: 1,
+          isFeatured: 1,
         },
       },
     ]);

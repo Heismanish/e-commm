@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Loader, PlusCircle, Upload } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
-import useProductState, { Product } from "../store/useProductStore";
+import useProductState from "../store/useProductStore";
+import Product from "../Types/product.type";
 
 const categories: string[] = [
   "Jeans",

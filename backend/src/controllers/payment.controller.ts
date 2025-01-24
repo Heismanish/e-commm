@@ -22,7 +22,7 @@ const createCheckoutSession = async (
 ): Promise<void> => {
   try {
     const { products, couponCode } = req.body;
-
+    console.log(products, couponCode);
     if (!Array.isArray(products) || products.length < 1) {
       res.status(400).json({ message: "Invalid or no products found" });
       return;
@@ -43,7 +43,7 @@ const createCheckoutSession = async (
           },
           unit_amount: amount,
         },
-        quantity: product.quantity,
+        quantity: product.quantity || 1,
       };
     });
 
@@ -68,7 +68,7 @@ const createCheckoutSession = async (
       payment_method_types: ["card"],
       line_items: checkoutProducts,
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/purchase-cancel`,
       discounts: coupon ? [{ coupon: stripeCoupon as string }] : [],
       metadata: {
@@ -135,19 +135,31 @@ async function generateNewCoupon(_id: Types.ObjectId) {
  * @returns {Promise<void>}
  */
 const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
+  console.log("Checkout hit" + req.body.sessionId);
   try {
     const { sessionId } = req.body;
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    console.log("Session", session);
+    if (session && session.payment_status === "paid") {
+      // Check if an order with this sessionId already exists
+      const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+      if (existingOrder) {
+        res.status(200).json({
+          success: true,
+          message: "Order already exists.",
+          orderId: existingOrder._id,
+        });
+        return;
+      }
 
-    if (session && session.payment_status === "unpaid") {
       const coupon = JSON.parse(session?.metadata?.coupon as string);
       await Coupon.findOneAndUpdate(
         { userId: session?.metadata?.userId, code: coupon?.code },
         { isActive: false }
       );
 
-      // create a new order:
+      // Create a new order
       const product = JSON.parse(session?.metadata?.products as string);
 
       const newOrder = await Order.create({
@@ -162,12 +174,13 @@ const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
       });
 
       res.status(200).json({
+        success: true,
         message:
           "Payment successful, order created, and coupon deactivated if used.",
         orderId: newOrder._id,
       });
     } else {
-      res.status(200).json({ message: "Payment failed" });
+      res.status(200).json({ success: false, message: "Payment failed" });
     }
   } catch (error: any) {
     console.error("Error processing successful checkout:", error);

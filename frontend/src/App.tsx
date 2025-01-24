@@ -11,14 +11,17 @@ import Dashboard from "./pages/Dashboard";
 import CategoryPage from "./pages/CategoryPage";
 import Cart from "./pages/CartPage";
 import useCartStore from "./store/useCartStore";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
+import PurchaseCancelPage from "./pages/PurchaseCancelPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
-  const { cart, getCartItems } = useCartStore();
+  const { getCartItems } = useCartStore();
 
   useEffect(() => {
+    if (!user) return;
     getCartItems();
-  }, [getCartItems]);
+  }, [getCartItems, user]);
 
   useEffect(() => {
     checkAuth();
@@ -62,6 +65,12 @@ function App() {
           <Route
             path="/cart"
             element={user ? <Cart /> : <Navigate to="/login" />}
+          />
+
+          <Route path="/purchase-success" element={<PurchaseSuccessPage />} />
+          <Route
+            path="/purchase-cancel"
+            element={user ? <PurchaseCancelPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>
