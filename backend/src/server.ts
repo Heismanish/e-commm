@@ -9,10 +9,12 @@ import couponRoute from "./routes/coupon.route";
 import paymentRoute from "./routes/payment.route";
 import analyticsRoute from "./routes/analytics.route";
 import cors from "cors";
+import path from "path";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+const _dirname = path.resolve();
 const app = express();
 
 const corsOptions = {
@@ -31,6 +33,13 @@ app.use("/api/cart", cartRoute);
 app.use("/api/coupons", couponRoute);
 app.use("/api/payments", paymentRoute);
 app.use("/api/analytics", analyticsRoute);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(_dirname, "/frontend/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`listening on port http://localhost:${PORT}`);

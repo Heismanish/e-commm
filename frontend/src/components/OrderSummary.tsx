@@ -23,6 +23,7 @@ const OrderSummary = () => {
   async function handlePayment(
     event: MouseEvent<HTMLButtonElement>
   ): Promise<void> {
+    event.preventDefault();
     try {
       const stripe = await stripePromise;
       const res = await axios.post("/payments/create-checkout-session", {

@@ -7,17 +7,20 @@ import Product from "../Types/product.type";
 type ProductStateType = {
   products: Product[];
   loading: boolean;
+  featuredProducts: Product[];
   setProducts: (products: Product[]) => void;
   createProduct: (productData: Product) => Promise<void>;
   fetchAllProducts: () => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   toggleFeaturedProduct: (productId: string) => Promise<void>;
   fetchProductByCategory: (category: string) => Promise<void>;
+  getFeaturedProducts: () => Promise<void>;
 };
 
 const useProductState = create<ProductStateType>()((set) => ({
   products: [],
   loading: false,
+  featuredProducts: [],
   setProducts: (products: Product[]) => set({ products: products }),
   createProduct: async (productData: Product) => {
     set({ loading: true });
@@ -25,7 +28,7 @@ const useProductState = create<ProductStateType>()((set) => ({
       const res = await axios.post("/product", productData);
 
       set((prevState) => ({
-        products: [...prevState.products, res.data.product],
+        products: [...prevState.products, res?.data?.product],
         loading: false,
       }));
 
@@ -92,6 +95,20 @@ const useProductState = create<ProductStateType>()((set) => ({
       set({ loading: false });
       console.log(error);
       toast.error("Failed to fetch products ", error?.response?.data.error);
+    }
+  },
+  getFeaturedProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/product/featured");
+
+      set({
+        featuredProducts: res?.data,
+      });
+    } catch (error: AxiosError | any) {
+      console.log("Error while fetching featured products", error);
+    } finally {
+      set({ loading: false });
     }
   },
 }));

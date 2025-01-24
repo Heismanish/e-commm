@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import CategoryItem from "../components/CategoryItem";
+import useProductState from "../store/useProductStore";
+import FeaturedProducts from "../components/FeaturedProducts";
 
 const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/Jeans.jpg" },
@@ -11,6 +14,10 @@ const categories = [
 ];
 
 const Homepage = () => {
+  const { getFeaturedProducts, featuredProducts, loading } = useProductState();
+  useEffect(() => {
+    getFeaturedProducts();
+  }, []);
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -25,6 +32,7 @@ const Homepage = () => {
             <CategoryItem key={idx} data={category} />
           ))}
         </div>
+        {!loading && featuredProducts?.length > 0 && <FeaturedProducts />}
       </div>
     </div>
   );

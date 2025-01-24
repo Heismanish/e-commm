@@ -12,7 +12,7 @@ function setCookies(res: Response, accessToken: string, refreshToken: string) {
     httpOnly: true, // prevent XSS
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict", // prevent CSRF
-    maxAge: 1000 * 60 * 15, // millisecond format
+    maxAge: 1000 * 60, // millisecond format
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true, // prevent XSS
@@ -164,6 +164,7 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 // 3. verify the token
 // 4. if valid then, generate a new access token ans set it to the cookie
 const accessToken = async (req: Request, res: Response): Promise<void> => {
+  console.log("Reached refresh");
   try {
     const { refreshToken } = req.cookies;
 
