@@ -22,7 +22,7 @@ const createCheckoutSession = async (
 ): Promise<void> => {
   try {
     const { products, couponCode } = req.body;
-    console.log(products, couponCode);
+
     if (!Array.isArray(products) || products.length < 1) {
       res.status(400).json({ message: "Invalid or no products found" });
       return;
@@ -135,7 +135,6 @@ async function generateNewCoupon(_id: Types.ObjectId) {
  * @returns {Promise<void>}
  */
 const checkoutSuccess = async (req: Request, res: Response): Promise<void> => {
-  console.log("Checkout hit" + req.body.sessionId);
   try {
     const { sessionId } = req.body;
 

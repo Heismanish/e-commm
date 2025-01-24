@@ -31,7 +31,7 @@ const OrderSummary = () => {
         couponCode: coupon?.code,
       });
       const session = res.data;
-      // console.log("Session is here: ", session);
+
       const result = await stripe?.redirectToCheckout({
         sessionId: session.sessionId,
       });

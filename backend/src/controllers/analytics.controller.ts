@@ -92,14 +92,14 @@ export const getDailySalesData = async (
       const foundData = dailySalesData.find(
         (data) => data._id === formattedDate
       );
-      console.log(foundData);
+
       return {
         date,
         sales: foundData ? foundData.sales : 0,
         revenue: foundData ? foundData.revenue : 0,
       };
     });
-    console.log(salesData);
+
     return salesData;
   } catch (error: any) {
     console.log("Error in getDailySalesData", error);

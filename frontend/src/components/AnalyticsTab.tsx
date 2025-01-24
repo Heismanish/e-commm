@@ -44,7 +44,7 @@ const AnalyticsTab = () => {
     const fetchAnalyticsData = async () => {
       try {
         const res = await axios.get("/analytics");
-        console.log(res.data.dailySalesData);
+
         setAnalyticsData(res.data.analytics);
         setDailySalesData(res.data.dailySalesData);
       } catch (error: AxiosError | any) {

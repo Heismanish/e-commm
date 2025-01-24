@@ -15,7 +15,7 @@ const SignupPage = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+
     signup(formData);
   };
 

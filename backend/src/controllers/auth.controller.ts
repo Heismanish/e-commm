@@ -164,7 +164,6 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 // 3. verify the token
 // 4. if valid then, generate a new access token ans set it to the cookie
 const accessToken = async (req: Request, res: Response): Promise<void> => {
-  console.log("Reached refresh");
   try {
     const { refreshToken } = req.cookies;
 
