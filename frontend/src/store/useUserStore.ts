@@ -85,7 +85,7 @@ const useUserState = create<UserStore>()((set, get) => ({
     set({ loading: true });
     try {
       const res = await axios.post("/auth/login", { email, password });
-      set({ user: res?.data?.user, loading: false });
+      set({ user: res?.data?.user!, loading: false });
       toast.success("Logged in successfully!!");
     } catch (error: unknown) {
       set({ loading: false });
