@@ -170,7 +170,6 @@ axios.interceptors.response.use(
       } catch (error) {
         // if refresh fails, logout
         useUserState.getState().logout();
-        refreshPromise = null;
         return Promise.reject(error);
       }
     }
