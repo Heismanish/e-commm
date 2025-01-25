@@ -2,7 +2,7 @@ import { create } from "zustand";
 import Product from "../Types/product.type";
 import axios from "../lib/axios";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import Coupon from "../Types/coupon.types";
 
 export interface ICart extends Product {
@@ -40,9 +40,14 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
         cart: res.data,
       });
       get().calculateTotal();
-    } catch (error) {
+    } catch (error: AxiosError | any) {
       set({ cart: [] });
-      toast.error("Failed to get cart items");
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to get cart items: " + error?.response?.data?.message,
+          { id: "get_cart" }
+        );
+      else toast.error("Failed to get cart items.", { id: "get_cart" });
     }
   },
 
@@ -50,7 +55,7 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
     try {
       const res = await axios.post("/cart", { productId: product._id });
 
-      toast.success("Product added to cart", { id: "cart" });
+      toast.success("Product added to cart", { id: "add_cart" });
       // handle the edge case:
       // 1. when product already exist in the cart.
       // 2. when product does not exist in the cart.
@@ -72,9 +77,12 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
       get().calculateTotal();
     } catch (error: AxiosError | any) {
       console.log(error.response.data.message);
-      toast.error(
-        "Failed to add product to cart " + error.response.data.message
-      );
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to add product to cart: " + error?.response?.data.message,
+          { id: "add_cart" }
+        );
+      else toast.error("Failed to add product to cart ", { id: "add_cart" });
     }
   },
   calculateTotal: () => {
@@ -93,16 +101,23 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
   removeFromCart: async (productId: string) => {
     try {
       const res = await axios.delete(`/cart/${productId}`);
-      toast.success("Product removed from cart", { id: "cart" });
+      toast.success("Product removed from cart", { id: "remove_cart" });
       set((prev) => ({
         cart: prev.cart.filter((item) => item._id !== productId),
       }));
       get().calculateTotal();
     } catch (error: AxiosError | any) {
       console.log(error.response.data.message);
-      toast.error(
-        "Failed to remove product from cart" + error.response.data.message
-      );
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to remove product from cart: " +
+            error?.response?.data.message,
+          { id: "remove_cart" }
+        );
+      else
+        toast.error("Failed to remove product from cart.", {
+          id: "remove_cart",
+        });
     }
   },
 
@@ -120,7 +135,19 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
         ),
       }));
       get().calculateTotal();
-    } catch (error: AxiosError | any) {}
+    } catch (error: AxiosError | any) {
+      console.log(error.response.data.message);
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to update product quantity in cart: " +
+            error?.response?.data.message,
+          { id: "cart" }
+        );
+      else
+        toast.error("Failed to update product quantity in cart", {
+          id: "cart",
+        });
+    }
   },
   clearCart: async () => {
     try {
@@ -130,16 +157,19 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
       // Update the client-side cart state
       set({ cart: [], coupon: null, total: 0, subtotal: 0 });
 
-      toast.success("Cart cleared!");
-    } catch (error) {
-      toast.error("Failed to clear cart.");
-      console.error("Error clearing cart:", error);
+      toast.success("Cart cleared!", { id: "cart" });
+    } catch (error: AxiosError | any) {
+      if (isAxiosError(error))
+        toast.error("Failed to clear cart: " + error?.response?.data?.message, {
+          id: "cart",
+        });
+      else toast.error("Failed to clear cart.", { id: "cart" });
+      console.error("Error clearing cart:" + error);
     }
   },
   getMyCoupon: async () => {
     try {
       const res = await axios.get("/coupons");
-
       set({ coupon: res.data.coupon });
     } catch (error) {
       set({ coupon: null });
@@ -150,20 +180,18 @@ const useCartStore = create<typeCartStore>()((set, get) => ({
       const res = await axios.post("/coupons/validate", { code: couponCode });
       set({ coupon: res.data, isCouponApplied: true });
       get().calculateTotal();
-      toast.success("Coupon applied successfully");
-    } catch (error) {
+      toast.success("Coupon applied successfully", { id: "coupon" });
+    } catch (error: AxiosError | any) {
       set({ coupon: null });
-      toast.error("Failed to apply coupon");
+      if (isAxiosError(error)) {
+        toast.error(error?.response?.data?.message, { id: "coupon" });
+      } else toast.error("Failed to apply coupon", { id: "coupon" });
     }
   },
   removeCoupon: async () => {
-    try {
-      set({ isCouponApplied: false });
-      get().calculateTotal();
-      toast.success("Coupon removed successfully");
-    } catch (error) {
-      toast.error("Failed to remove coupon");
-    }
+    set({ isCouponApplied: false });
+    get().calculateTotal();
+    toast.success("Coupon removed successfully", { id: "coupon" });
   },
 }));
 

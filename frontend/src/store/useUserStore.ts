@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { isAxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import axios from "../lib/axios";
 import { toast } from "react-hot-toast";
 
@@ -65,7 +65,7 @@ const useUserState = create<UserStore>()((set, get) => ({
         password,
       });
       set({ user: response.data.user, loading: false });
-      toast.success("Signed up successfully!!");
+      toast.success("Signed up successfully!!", { id: "auth" });
       return;
     } catch (error: unknown) {
       set({ loading: false });
@@ -73,10 +73,10 @@ const useUserState = create<UserStore>()((set, get) => ({
         toast.error(
           error.response?.data?.message ||
             "An error has occurred while signing up!!",
-          { id: "signup" }
+          { id: "auth" }
         );
       } else {
-        toast.error("An unknown error occurred", { id: "signup" });
+        toast.error("An unknown error occurred", { id: "auth" });
       }
       return;
     }
@@ -111,10 +111,13 @@ const useUserState = create<UserStore>()((set, get) => ({
       set({ user: null, checkingAuth: false });
       if (isAxiosError(error)) {
         toast.error(
-          error.response?.data?.message || "Failed to authenticate user."
+          error.response?.data?.message || "Failed to authenticate user.",
+          { id: "checkAuth" }
         );
       } else {
-        toast.error("An unknown error occurred during authentication.");
+        toast.error("An unknown error occurred during authentication.", {
+          id: "checkAuth",
+        });
       }
     }
   },
@@ -125,9 +128,14 @@ const useUserState = create<UserStore>()((set, get) => ({
       return;
     } catch (error) {
       if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Failed to log out user.");
+        toast.error(
+          error.response?.data?.message || "Failed to log out user.",
+          { id: "auth" }
+        );
       } else {
-        toast.error("An unknown error occurred during logging out.");
+        toast.error("An unknown error occurred during logging out.", {
+          id: "auth",
+        });
       }
     }
   },
@@ -138,8 +146,9 @@ const useUserState = create<UserStore>()((set, get) => ({
       const res = await axios.get("/auth/access-token");
       set({ checkingAuth: false });
       return res.data;
-    } catch (error) {
-      console.log(error);
+    } catch (error: AxiosError | any) {
+      if (isAxiosError(error)) console.log(error?.response?.data?.message);
+      else console.log(error);
       set({ checkingAuth: false, user: null });
       throw error;
     }

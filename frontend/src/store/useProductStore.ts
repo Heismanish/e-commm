@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import axios from "../lib/axios";
-import { AxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 import Product from "../Types/product.type";
 
 type ProductStateType = {
@@ -32,9 +32,16 @@ const useProductState = create<ProductStateType>()((set) => ({
         loading: false,
       }));
 
-      toast.success("Product created successfully!!");
+      toast.success("Product created successfully!!", { id: "create" });
     } catch (error: AxiosError | any) {
-      toast.error("Failed to create product", error.response.data.error);
+      if (isAxiosError(error)) {
+        toast.error(
+          "Failed to create product: " + error?.response?.data.error,
+          {
+            id: "create",
+          }
+        );
+      } else toast.error("Failed to create product", { id: "create" });
       console.log(error);
       set({ loading: false });
     }
@@ -55,9 +62,16 @@ const useProductState = create<ProductStateType>()((set) => ({
         products: prev.products.filter((product) => product._id !== productId),
         loading: false,
       }));
-      toast.success("Product deleted successfully!!");
+      toast.success("Product deleted successfully!!", { id: "delete" });
     } catch (error: AxiosError | any) {
-      toast.error("Failed to delete product", error.response.data.error);
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to delete product: " + error?.response?.data.error,
+          {
+            id: "delete",
+          }
+        );
+      else toast.error("Failed to delete product", { id: "delete" });
       console.log(error);
       set({ loading: false });
     }
@@ -75,9 +89,14 @@ const useProductState = create<ProductStateType>()((set) => ({
         }),
         loading: false,
       }));
-      toast.success("Product updated successfully!!");
+      toast.success("Product updated successfully!!", { id: "toggleFeatured" });
     } catch (error: AxiosError | any) {
-      toast.error("Failed to update product", error.response.data.error);
+      if (isAxiosError(error))
+        toast.error(
+          "Failed to update product: " + error?.response?.data.message,
+          { id: "toggleFeatured" }
+        );
+      else toast.error("Failed to update product", { id: "toggleFeatured" });
       console.log(error);
       set({ loading: false });
     }
@@ -94,7 +113,16 @@ const useProductState = create<ProductStateType>()((set) => ({
     } catch (error: AxiosError | any) {
       set({ loading: false });
       console.log(error);
-      toast.error("Failed to fetch products ", error?.response?.data.error);
+      if (isAxiosError(error)) {
+        toast.error(
+          "Failed to fetch products: " + error?.response?.data.error,
+          {
+            id: "category",
+          }
+        );
+      } else {
+        toast.error("Failed to fetch products ", { id: "category" });
+      }
     }
   },
   getFeaturedProducts: async () => {
@@ -106,7 +134,7 @@ const useProductState = create<ProductStateType>()((set) => ({
         featuredProducts: res?.data,
       });
     } catch (error: AxiosError | any) {
-      console.log("Error while fetching featured products", error);
+      console.log("Error while fetching featured products: ", error);
     } finally {
       set({ loading: false });
     }
