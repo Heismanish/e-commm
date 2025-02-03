@@ -190,27 +190,29 @@ let refreshPromise: Promise<void> | null = null;
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = { ...error.config }; // Clone request to prevent issues
-
+    const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        if (!refreshPromise) {
-          refreshPromise = useUserState.getState().refreshToken();
+        // If a refresh is already in progress, wait for it to complete
+        if (refreshPromise) {
+          await refreshPromise;
+          return axios(originalRequest);
         }
 
-        await refreshPromise; // Wait for token refresh to complete
+        // Start a new refresh process
+        refreshPromise = useUserState.getState().refreshToken();
+        await refreshPromise;
+        refreshPromise = null;
 
-        return axios(originalRequest); // Retry request with new token
+        return axios(originalRequest);
       } catch (refreshError) {
-        useUserState.getState().logout(); // Logout on refresh failure
+        // If refresh fails, redirect to login or handle as needed
+        useUserState.getState().logout();
         return Promise.reject(refreshError);
-      } finally {
-        refreshPromise = null; // Reset refreshPromise after completion
       }
     }
-
     return Promise.reject(error);
   }
 );
