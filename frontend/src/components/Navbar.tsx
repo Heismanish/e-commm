@@ -8,7 +8,7 @@ const Navbar = () => {
   const { user, logout } = useUserState();
   const { cart, getCartItems } = useCartStore();
 
-  const isAdmin = user?.role;
+  const isAdmin: boolean = user?.role === "admin";
 
   useEffect(() => {
     getCartItems();
