@@ -82,8 +82,8 @@ E-Comm is a full-stack e-commerce application built with TypeScript. It provides
 ### 1️⃣ Clone the Repository
 
 ```sh
-git clone https://github.com/your-username/e-comm.git
-cd e-comm
+git clone https://github.com/Heismanish/e-commm.git
+cd e-commm
 ```
 
 ### 2️⃣ Install Dependencies
